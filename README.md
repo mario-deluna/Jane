@@ -12,16 +12,27 @@ hash = [md5:'foo']
 
 some = ( 'foo', 'bar' )
 
+some.0 = 'fooo'
+
 fnc myfunction:a,b 
 {
 	return a + b
 }
 
+if var is 5
+{
+	object = new Session:'main'
+}
+
+[Session.handler delete]
+
+[Session set:'user', 'guest']
+
 class Foo extends Bar
 {
 	public static say:message
 	{
-		if ( [is_closure:message] )
+		if [is_closure:message]
 		{
 			message = [message]
 		}
