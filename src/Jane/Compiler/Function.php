@@ -18,46 +18,82 @@ class Jane_Compiler_Function extends Jane_Compiler_Base implements Jane_Compiler
 	 */
 	protected function transform_functions()
 	{
-		// I hate this workaround
-		$that = $this;
+		$buffer = "";
 		
-		$this->code =  preg_replace_callback('/\[(.*?)\]/s', function( $match ) use( $that )
-		{ 
-			$function = trim( $match[1] );
+		$match = "";
+		
+		$function_depth = 0;
+		
+		for( $i=0;$i<strlen($this->code);$i++ )
+		{
+			$char = $this->code[$i];
 			
-			if ( strpos( $function, ':' ) !== false )
+			if ( $char === '[' )
 			{
-				var_dump( 'fnc: '.$function );
-				var_dump( substr( $function, strpos( $function, ':' )+1 ) );
-				$arguments = $this->parse_arguments( substr( $function, strpos( $function, ':' )+1 ) );
-				
-				$function = substr( $function, 0, strpos( $function, ':' ) );
+				$function_depth++;
+			}
+			
+			if ( $function_depth > 0 )
+			{
+				$match .= $char;
 			}
 			else
 			{
-				$arguments = '';
+				$buffer .= $char;
 			}
 			
-			// static call or instance call
-			if ( strpos( $function, ' ' ) !== false )
+			if ( $char === ']' )
 			{
-				// object context
-				if ( substr( $function, 0, 1 ) === '$' )
-				{
-					$function = str_replace( ' ', '->', $function );
-				}
-				// staic context
-				else
-				{
-					$function = str_replace( ' ', '::', $function );
-				}
+				$function_depth--;
 			}
 			
-			return $function.'('. ( strlen( $arguments ) > 0 ? ' '.$arguments.' ' : '' ) .')';
-		}, $this->code );
+			if ( $char === ']' && $function_depth === 0 )
+			{
+				$match = substr( $match, 1, -1 );
+				$buffer .= $this->format_function( $match ); $match = '';
+			}
+		}
+		
+		$this->code = $buffer;
 	}
 	
-	
+	/**
+	 * Function formatter
+	 *
+	 * @param string 	$function
+	 * @return string
+	 */
+	protected function format_function( $function )
+	{
+		$function = trim( $function );
+		
+		if ( strpos( $function, ':' ) !== false )
+		{
+			$arguments = $this->parse_arguments( substr( $function, strpos( $function, ':' )+1 ) );
+			$function = substr( $function, 0, strpos( $function, ':' ) );
+		}
+		else
+		{
+			$arguments = '';
+		}
+		
+		// static call or instance call
+		if ( strpos( $function, ' ' ) !== false )
+		{
+			// object context
+			if ( substr( $function, 0, 1 ) === '$' )
+			{
+				$function = str_replace( ' ', '->', $function );
+			}
+			// staic context
+			else
+			{
+				$function = str_replace( ' ', '::', $function );
+			}
+		}
+		
+		return $function.'('. ( strlen( $arguments ) > 0 ? ' '.$arguments.' ' : '' ) .')';
+	}
 	
 	/**
 	 * return the compiled code

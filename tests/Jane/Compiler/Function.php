@@ -79,6 +79,6 @@ class Jane_Compiler_Function_Test extends \PHPUnit_Framework_TestCase
 		// closure with arguments
 		$result = $this->compiler( '[Post find:$q {[$q limit:10]}]' );
 		
-		$this->assertEquals( 'say( function() { return "bla" } )', $result->compile() );
+		$this->assertEquals( 'Post::find( function( $q ) { $q->limit( 10 ) } )', $result->compile() );
 	}
 }
