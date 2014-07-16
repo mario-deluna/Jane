@@ -65,4 +65,20 @@ class Jane_Compiler_Function_Test extends \PHPUnit_Framework_TestCase
 		
 		$this->assertEquals( 'substr( User::change_name( NameGenerator::create( 6, 12 ) ), 2, -1 )', $result->compile() );
 	}
+	
+	/**
+	 * tests basic transformations
+	 */
+	public function test_closures()
+	{
+		// simple closure
+		$result = $this->compiler( '[say:{return "bla"}]' );
+		
+		$this->assertEquals( 'say( function() { return "bla" } )', $result->compile() );
+		
+		// closure with arguments
+		$result = $this->compiler( '[Post find:$q {[$q limit:10]}]' );
+		
+		$this->assertEquals( 'say( function() { return "bla" } )', $result->compile() );
+	}
 }

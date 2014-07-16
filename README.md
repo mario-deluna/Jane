@@ -43,9 +43,15 @@ class Foo extends Bar
 
 [Foo say: 'Hi']
 
-[Foo say: 
+[Foo say:
 {
 	return 'Lol'
+}]
+
+[User find: q 
+{
+	[q where: 12]
+	[q limit: 1]
 }]
 
 ```

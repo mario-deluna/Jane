@@ -16,7 +16,7 @@ class Jane_Compiler_Function extends Jane_Compiler_Base implements Jane_Compiler
 	 *
 	 * @return void
 	 */
-	public function transform_functions()
+	protected function transform_functions()
 	{
 		// I hate this workaround
 		$that = $this;
@@ -27,8 +27,9 @@ class Jane_Compiler_Function extends Jane_Compiler_Base implements Jane_Compiler
 			
 			if ( strpos( $function, ':' ) !== false )
 			{
-				$arguments = substr( $function, strpos( $function, ':' )+1 );
-				$arguments = trim( $arguments );	
+				var_dump( 'fnc: '.$function );
+				var_dump( substr( $function, strpos( $function, ':' )+1 ) );
+				$arguments = $this->parse_arguments( substr( $function, strpos( $function, ':' )+1 ) );
 				
 				$function = substr( $function, 0, strpos( $function, ':' ) );
 			}
@@ -55,6 +56,8 @@ class Jane_Compiler_Function extends Jane_Compiler_Base implements Jane_Compiler
 			return $function.'('. ( strlen( $arguments ) > 0 ? ' '.$arguments.' ' : '' ) .')';
 		}, $this->code );
 	}
+	
+	
 	
 	/**
 	 * return the compiled code
