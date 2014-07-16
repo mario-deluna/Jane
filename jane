@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php 
+/*
+ *---------------------------------------------------------------
+ * Jane runner
+ *---------------------------------------------------------------
+ *
+ * This is the jane command line interface
+ */
+if ( isset( $argv ) ) 
+{
+    array_shift( $argv ); $argv = implode( ' ', $argv );
+}
+
+require 'vendor/autoload.php';
+
+echo "\n".Jane::transform( file_get_contents( $argv ) )."\n\n";

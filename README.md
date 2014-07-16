@@ -1,7 +1,7 @@
 Jane
 ====
 
-Jane is a programming language based on php and compiles into php.
+Jane is a programming language based on php, and compiles into php.
 
 Well this is probably a brain fart, but the idea is simpler and beautifuler syntax.
 

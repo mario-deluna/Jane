@@ -1,0 +1,24 @@
+{
+	"name": "mario-deluna/jane",
+	"type": "library",
+	"description": "Jane is a programming language based on php and compiles into php.",
+	"version": "1.0.0",
+	"keywords": [ "jane" ],
+	"homepage": "https://github.com/mario-deluna/Jane",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Mario Döring",
+			"email": "mario@clancats.com",
+			"homepage": "https://clancats.ch",
+			"role": "Developer"
+		}
+	],
+	"autoload": {
+		"psr-0": {
+			"Jane": "src/"
+		}
+	},
+	"require": {
+	}
+}
