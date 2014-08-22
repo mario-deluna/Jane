@@ -14,4 +14,6 @@ if ( isset( $argv ) )
 
 require 'vendor/autoload.php';
 
-echo "\n".Jane::transform( file_get_contents( $argv ) )."\n\n";
+echo Jane::transform( file_get_contents( $argv ) ); die;
+
+echo "\n".eval( Jane::transform( file_get_contents( $argv ) ) );

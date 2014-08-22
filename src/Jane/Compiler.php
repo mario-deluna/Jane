@@ -31,6 +31,7 @@ class Jane_Compiler
 	 * @var array
 	 */
 	protected $compilers = array(
+		// 'vars', // we do not compile vars at the moment because well its freking tricky
 		'function',
 	);
 	
