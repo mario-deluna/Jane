@@ -10,7 +10,7 @@ foo = [CCStr random:0,12]
 
 hash = [md5:'foo']
 
-some = ( 'foo', 'bar' )
+some = @[ 'foo', 'bar' ]
 
 some.0 = 'fooo'
 
