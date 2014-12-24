@@ -15,8 +15,8 @@
 		}
 	],
 	"autoload": {
-		"psr-0": {
-			"Jane": "src/"
+		"psr-4": {
+			"Jane\\": "src/"
 		}
 	},
 	"require": {

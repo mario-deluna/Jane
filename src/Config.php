@@ -1,15 +1,15 @@
-<?php
+<?php namespace Jane;
 /**
  * Jane Configuration
  **
  *
  * @package 		Jane
- * @author		Mario Döring <mario@clancats.com>
- * @version		1.0
- * @copyright 	2014 ClanCats GmbH
+ * @author			Mario Döring <mario@clancats.com>
+ * @version			1.0
+ * @copyright 		2014 ClanCats GmbH
  *
  */
-class Jane_Config
+class Config
 {
 	/**
 	 * Configuration data
@@ -38,5 +38,15 @@ class Jane_Config
 	public function get( $key )
 	{
 		return $this->data[$key];
+	}
+	
+	/**
+	 * Get all configuration values
+	 *
+	 * @return array[mixed]
+	 */ 
+	public function get_all()
+	{
+		return $this->data;
 	}
 }

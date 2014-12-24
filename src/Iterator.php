@@ -4,9 +4,9 @@
  **
  *
  * @package 		Jane
- * @author		Mario Döring <mario@clancats.com>
- * @version		1.0
- * @copyright 	2014 ClanCats GmbH
+ * @author			Mario Döring <mario@clancats.com>
+ * @version			1.0
+ * @copyright 		2014 ClanCats GmbH
  *
  */
 class Jane_Iterator
@@ -61,11 +61,11 @@ class Jane_Iterator
 	protected $current_word = '';
 	
 	/**
-	 * The last word 
+	 * The last words 
 	 *
 	 * @var string
 	 */
-	protected $last_word = '';
+	protected $last_words = array();
 	
 	/**
 	 * Are we in a single quetes string
@@ -129,7 +129,7 @@ class Jane_Iterator
 		}
 		
 		// update the current jane word
-		if ( preg_match('/^[a-zA-Z_]$/', $this->char ) )
+		if ( preg_match('/^[a-zA-Z_\-\{\}\n]$/', $this->char ) )
 		{
 			$this->current_word .= $this->char;
 		}
@@ -137,7 +137,7 @@ class Jane_Iterator
 		{
 			if ( !empty( $this->current_word ) )
 			{
-				$this->last_word = $this->current_word;
+				array_unshift( $this->last_words, $this->current_word );
 				$this->current_word = '';
 			}
 		}
@@ -208,9 +208,9 @@ class Jane_Iterator
 	 *
 	 * @return string
 	 */
-	public function last_word()
+	public function last_word( $i = 0 )
 	{
-		return $this->last_word;
+		return $this->last_words[$i];
 	}
 	
 	/**
