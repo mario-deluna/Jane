@@ -1,6 +1,6 @@
-<?php namespace Jane;
+<?php namespace Jane\Lexer;
 /**
- * Jane Exception
+ * Jane Lexer Exception
  **
  *
  * @package 		Jane

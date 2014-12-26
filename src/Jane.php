@@ -46,7 +46,7 @@ class Jane
 		}
 		else
 		{
-			$defaults = static::$config->get_all();
+			$defaults = static::$config->getAll();
 		}
 		
 		static::$config = new Config( array_merge( $defaults, $config ) );

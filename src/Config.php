@@ -45,7 +45,7 @@ class Config
 	 *
 	 * @return array[mixed]
 	 */ 
-	public function get_all()
+	public function getAll()
 	{
 		return $this->data;
 	}

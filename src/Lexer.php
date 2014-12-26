@@ -1,4 +1,4 @@
-<?php
+<?php namespace Jane;
 /**
  * Jane Base Parser
  **
@@ -9,14 +9,71 @@
  * @copyright 		2014 ClanCats GmbH
  *
  */
-class Jane_Parser
+ 
+use Jane\Lexer\Exception;
+ 
+class Lexer
 {	
 	/**
-	 * The current scope
+	 * The current code we want to iterate trough
 	 *
-	 * @var Jane_Parser_Scope
+	 * @var string
 	 */
-	protected $scope = null;
+	protected $code = null;
+	
+	/**
+	 * The code lenght to iterate
+	 *
+	 * @var int
+	 */
+	protected $length = 0;
+	
+	/**
+	 * The current string offset in the code
+	 *
+	 * @var int
+	 */
+	protected $offset = 0;
+	
+	/**
+	 * The current line
+	 *
+	 * @var int
+	 */
+	protected $line = 0;
+	
+	
+	protected $tokenMap = array(
+		'/^"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"/' => 'string',
+		"/^'[^'\\\\]*(?:\\\\.[^'\\\\]*)*'/" => 'string',
+	
+		// primitives
+		"/^(int)/" => "primitiveInt",
+		"/^(float)/" => "primitiveFloat",
+		"/^(double)/" => "primitiveDouble",
+		"/^(string)/" => "primitiveString",
+		"/^(array)/" => "primitiveArray",
+		"/^(bool)/" => "primitiveBool",
+		
+		// comparsion
+		"/^(==)/" => "isEqual",
+		"/^(!=)/" => "isNotEqual",
+		"/^(>=)/" => "isGreaterOrEqual",
+		"/^(<=)/" => "isSmallerOrEqual",
+		"/^(===)/" => "isIdentical",
+		"/^(!==)/" => "isNotIdentical",
+		
+		// expression
+		"/^(=)/" => "equal",
+		
+		"/^(\s+)/" 						=> "whitespace",
+		"/^(\n+)/" 						=> "linebreak",
+		"/^(\/[A-Za-z0-9\/:]+[^\s])/" 	=> "url",
+		"/^(->)/" 						=> "blockstart",
+		"/^(::)/" 						=> "doubleseperator",
+		"/^(\w+)/" 						=> "identifier",
+		
+	);
 
 	/**
 	 * The constructor
@@ -26,16 +83,70 @@ class Jane_Parser
 	 */
 	public function __construct( $code )
 	{
-		$this->scope = new Jane_Parser_Scope( $code );
-	}	
-
+		$this->code = $code;
+		$this->length = strlen( $code );
+	}
+	
 	/**
-	 * Return the current scope
+	 * Get the codes lenght
 	 *
-	 * @return Jane_Parser_Scope
+	 * @return int
 	 */
-	public function scope()
+	public function length()
 	{
-		return $this->scope;
+		return $this->length;
+	}
+	
+	/**
+	 * Lex the next word
+	 * Return false everything has been parsed
+	 *
+	 * @return string|false
+	 */
+	protected function lexNext()
+	{
+		if ( $this->offset >= $this->length )
+		{
+			return false;
+		}
+		
+		foreach( $this->tokenMap as $regex => $token ) 
+		{
+			if ( preg_match( $regex, substr( $this->code, $this->offset ), $matches ) ) 
+			{
+				if ( $token == 'linebreak' )
+				{
+					$this->line++;
+				}
+				
+				$this->offset += strlen( $matches[0] );
+				
+				return array(
+					$token,
+					$matches[0],
+					$this->line,
+				);
+			}
+		}
+		
+		throw new Exception( sprintf( 'Unexpected character "%s"', $this->code[ $this->offset ] ) );
+	}
+	
+	/**
+	 * Lex the tokens from the code
+	 * 
+	 * @throws Jane\Lexer\Exception
+	 * @return array
+	 */
+	public function getTokens() 
+	{
+		$tokens = array();
+		
+		while( $token = $this->lexNext() )
+		{
+			$tokens[] = $token;
+		}
+	
+		return $tokens;
 	}
 }
