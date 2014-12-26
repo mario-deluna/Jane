@@ -16,6 +16,18 @@ use Jane\Lexer;
 
 class Lexer_Test extends \PHPUnit_Framework_TestCase
 {
+	protected function pickTokenTypes( array $tokens )
+	{
+		$types = array();
+		
+		foreach( $tokens as $token )
+		{
+			$types[] = $token[0];
+		}
+		
+		return $types;
+	}
+	
 	/**
 	 * tests Lexer
 	 */
@@ -32,15 +44,77 @@ class Lexer_Test extends \PHPUnit_Framework_TestCase
 	 */
 	public function test_tokenString()
 	{	
-		// assign an of an string
+		// string
 		$lexer = new Lexer( '"hello world"' );
+		$this->assertEquals( ['string'], $this->pickTokenTypes( $lexer->getTokens() ) );
 		
-		// assign an of an string singlequotes
+		// string singlequotes
 		$lexer = new Lexer( "'hello world'" );
+		$this->assertEquals( ['string'], $this->pickTokenTypes( $lexer->getTokens() ) );
 		
-		// assign an of an string singlequotes escaped
+		// string singlequotes escaped
 		$lexer = new Lexer( "'hello \'world'" );
-		 
-		var_dump( $lexer->getTokens() );
+		$this->assertEquals( ['string'], $this->pickTokenTypes( $lexer->getTokens() ) );
+	}
+	
+	/**
+	 * tests Lexer
+	 */
+	public function test_tokenPrimitivesDeclaration()
+	{	
+		// int declaration
+		$lexer = new Lexer( 'int myInt' );
+		$this->assertEquals( 
+			['primitiveInt', 'whitespace', 'identifier'], 
+			$this->pickTokenTypes( $lexer->getTokens() )
+		);
+		
+		// float declaration
+		$lexer = new Lexer( 'float myFloat' );
+		$this->assertEquals( 
+			['primitiveFloat', 'whitespace', 'identifier'], 
+			$this->pickTokenTypes( $lexer->getTokens() )
+		);
+		
+		// float declaration
+		$lexer = new Lexer( 'double myDouble' );
+		$this->assertEquals( 
+			['primitiveDouble', 'whitespace', 'identifier'], 
+			$this->pickTokenTypes( $lexer->getTokens() )
+		);
+		
+		// bool declaration
+		$lexer = new Lexer( 'bool myBool' );
+		$this->assertEquals( 
+			['primitiveBool', 'whitespace', 'identifier'], 
+			$this->pickTokenTypes( $lexer->getTokens() )
+		);
+		
+		// bool declaration
+		$lexer = new Lexer( 'string myString' );
+		$this->assertEquals( 
+			['primitiveString', 'whitespace', 'identifier'], 
+			$this->pickTokenTypes( $lexer->getTokens() )
+		);
+		
+		// array declaration
+		$lexer = new Lexer( 'array myArray' );
+		$this->assertEquals( 
+			['primitiveArray', 'whitespace', 'identifier'], 
+			$this->pickTokenTypes( $lexer->getTokens() )
+		);
+	}
+	
+	/**
+	 * tests Lexer
+	 */
+	public function test_tokenPrimitivesDeclaration()
+	{	
+		// int declaration
+		$lexer = new Lexer( 'int myInt' );
+		$this->assertEquals( 
+			['primitiveInt', 'whitespace', 'identifier'], 
+			$this->pickTokenTypes( $lexer->getTokens() )
+		);
 	}
 }
