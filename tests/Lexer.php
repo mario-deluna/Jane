@@ -9,7 +9,7 @@
  * @copyright 		2014 ClanCats GmbH
  *
  * @group Jane
- * @group Jane_Jane
+ * @group Jane_Lexer
  */
 
 use Jane\Lexer;
@@ -101,19 +101,6 @@ class Lexer_Test extends \PHPUnit_Framework_TestCase
 		$lexer = new Lexer( 'array myArray' );
 		$this->assertEquals( 
 			['primitiveArray', 'whitespace', 'identifier'], 
-			$this->pickTokenTypes( $lexer->getTokens() )
-		);
-	}
-	
-	/**
-	 * tests Lexer
-	 */
-	public function test_tokenPrimitivesDeclaration()
-	{	
-		// int declaration
-		$lexer = new Lexer( 'int myInt' );
-		$this->assertEquals( 
-			['primitiveInt', 'whitespace', 'identifier'], 
 			$this->pickTokenTypes( $lexer->getTokens() )
 		);
 	}

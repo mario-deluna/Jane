@@ -44,9 +44,11 @@ class Lexer
 	
 	
 	protected $tokenMap = array(
+	
+		// strings
 		'/^"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"/' => 'string',
 		"/^'[^'\\\\]*(?:\\\\.[^'\\\\]*)*'/" => 'string',
-	
+		
 		// primitives
 		"/^(int)/" => "primitiveInt",
 		"/^(float)/" => "primitiveFloat",
@@ -64,13 +66,20 @@ class Lexer
 		"/^(!==)/" => "isNotIdentical",
 		
 		// expression
+		"/^(\+=)/" => "equalAdd",
+		"/^(\-=)/" => "equalSub",
+		"/^(\*=)/" => "equalMultiply",
+		"/^(\/=)/" => "equalDivide",
+		"/^(\.=)/" => "equalAppend",
 		"/^(=)/" => "equal",
+		
 		
 		"/^(\s+)/" 						=> "whitespace",
 		"/^(\n+)/" 						=> "linebreak",
-		"/^(\/[A-Za-z0-9\/:]+[^\s])/" 	=> "url",
 		"/^(->)/" 						=> "blockstart",
 		"/^(::)/" 						=> "doubleseperator",
+		"/^(,)/" 						=> "comma",
+		"/^(@)/" 						=> "arrayIndicator",
 		"/^(\w+)/" 						=> "identifier",
 		
 	);
@@ -103,7 +112,7 @@ class Lexer
 	 *
 	 * @return string|false
 	 */
-	protected function lexNext()
+	protected function next()
 	{
 		if ( $this->offset >= $this->length )
 		{
@@ -142,7 +151,7 @@ class Lexer
 	{
 		$tokens = array();
 		
-		while( $token = $this->lexNext() )
+		while( $token = $this->next() )
 		{
 			$tokens[] = $token;
 		}
