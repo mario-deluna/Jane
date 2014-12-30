@@ -1,62 +1,31 @@
-<?php
+<?php namespace Jane;
 /**
  * Jane Compiler
  **
  *
  * @package 		Jane
- * @author		Mario Döring <mario@clancats.com>
- * @version		1.0
- * @copyright 	2014 ClanCats GmbH
+ * @author			Mario Döring <mario@clancats.com>
+ * @version			1.0
+ * @copyright 		2014 ClanCats GmbH
  *
  */
-class Jane_Compiler
+class Compiler
 {
 	/**
-	 * The transormed code
+	 * The parsed code
 	 *
-	 * @var string
+	 * @var array[Jane\Node]
 	 */
-	protected $code = "";
-	
-	/**
-	 * The original code
-	 *
-	 * @var string
-	 */
-	protected $original = "";
-	
-	/**
-	 * The code compilers
-	 *
-	 * @var array
-	 */
-	protected $compilers = array(
-		// 'vars', // we do not compile vars at the moment because well its freking tricky
-		'function',
-	);
+	protected $code = array();
 	
 	/**
 	 * Create new compiler
 	 *
 	 * @param string 
 	 */
-	public function __construct( $code = null )
+	public function __construct( array $code )
 	{
-		if ( !is_null( $code ) )
-		{
-			$this->code( $code );
-		}
-	}
-	
-	/**
-	 * Set the code
-	 *
-	 * @param string 		$code
-	 * @return void
-	 */
-	public function code( $code )
-	{
-		$this->code = $this->original = $code;
+		$this->code = $code;
 	}
 	
 	/**
@@ -66,15 +35,35 @@ class Jane_Compiler
 	 */
 	public function transform()
 	{
-		$this->code = $this->original;
+		$result = "";
 		
-		foreach( $this->compilers as $compiler )
+		foreach( $this->code as $node )
 		{
-			$compiler = 'Jane_Compiler_'.ucfirst( $compiler );
-			$compiler = new $compiler( $this->code );
-			$this->code = $compiler->compile();
+			$result .= call_user_func( array( $this, 'compile'.ucfirst( $node->compiler() ) ), $node );
 		}
 		
-		return $this->code;
+		return $result;
+	}
+	
+	/**
+	 * Converts an identifier to an var
+	 *
+	 * @param string 			$identifier
+	 * @return string
+	 */
+	protected function identifierToVar( $identifier )
+	{
+		return '$'.$identifier;
+	}
+	
+	/**
+	 * Compiles the var assignment
+	 *
+	 * @param Jane\Node 			$node
+	 * @return string
+	 */
+	protected function compileVarAssignment( $node )
+	{
+		return $this->identifierToVar( $node->identifier ).' '.$node->assigner.' '.$node->value.";\n";
 	}
 }

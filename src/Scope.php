@@ -11,5 +11,5 @@
  */
 class Scope
 {	
-	
+	protected $variables;
 }

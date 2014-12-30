@@ -73,11 +73,19 @@ class Lexer
 		"/^(\.=)/" => "equalAppend",
 		"/^(=)/" => "equal",
 		
+		// function
+		"/^(fnc)/" => "function",
 		
+		// scope
+		"/^({)/" 						=> "scopeOpen",
+		"/^(})/" 						=> "scopeClose",
+		
+		//
 		"/^(\s+)/" 						=> "whitespace",
 		"/^(\n+)/" 						=> "linebreak",
 		"/^(->)/" 						=> "blockstart",
 		"/^(::)/" 						=> "doubleseperator",
+		"/^(:)/" 						=> "seperator",
 		"/^(,)/" 						=> "comma",
 		"/^(@)/" 						=> "arrayIndicator",
 		"/^(\w+)/" 						=> "identifier",

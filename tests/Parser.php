@@ -38,5 +38,7 @@ class Parser_Test extends \PHPUnit_Framework_TestCase
 		$this->assertEquals( 'myVar', $data->identifier );
 		$this->assertEquals( '=', $data->assigner );
 		$this->assertEquals( '"hello world"', $data->value );
+		
+		
 	}
 }

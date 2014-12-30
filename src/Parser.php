@@ -50,7 +50,8 @@ class Parser
 	 * @var array
 	 */
 	protected $customParserActionTokens = array(
-		'identifier'
+		'identifier',
+		'function'
 	);
 	
 	/**
@@ -90,6 +91,8 @@ class Parser
 	 */
 	public function parse()
 	{
+		$scope = new Scope;
+		
 		$code = array();
 		
 		for( $this->index = 0; $this->index < $this->tokenCount; $this->index++ )
@@ -141,6 +144,64 @@ class Parser
 	protected function skipToken( $times = 1 )
 	{
 		$this->index += $times;
+	}
+	
+	/**
+	 * Parse an incoming function
+	 *
+	 * @param Jane\Node			$node
+	 * @return Jane\Node
+	 */
+	protected function parseFunction( $node )
+	{
+		if ( $this->nextToken()->type !== 'identifier' )
+		{
+			throw new Exception( 'no identifier given for function on line:'.$node->line );
+		}
+		
+		$arguments = array();
+		
+		// check if the function implements arguments
+		if ( $this->nextToken(2)->type === 'seperator' )
+		{
+			$tokenIndex = 3;
+			$nextToken = $this->nextToken( $tokenIndex );
+			$argumentIndex = 0;
+			
+			while ( $nextToken->type !== 'scopeOpen' ) 
+			{
+				if ( !isset( $arguments[$argumentIndex] ) )
+				{
+					$arguments[$argumentIndex] = array(
+						'dataType' => null,
+						'name' => null,
+						'default' => null,
+					);
+				}
+				
+				// primitive dataType
+				if ( $nextToken->isPritiveDefinition() )
+				{
+					$arguments[$argumentIndex]['dataType'] = $nextToken->type;
+				}
+				
+				// is the name ( identifier )
+				if ( $nextToken->type === 'identifier' )
+				{
+					$arguments[$argumentIndex]['name'] = $nextToken->value;
+				}
+				
+				// next argument
+				if ( $nextToken->type === 'comma' )
+				{
+					$argumentIndex++;
+				}
+				
+				// set next token
+				$tokenIndex++;
+				$nextToken = $this->nextToken( $tokenIndex );
+			}
+		}
 	}
 	
 	/**
@@ -220,10 +281,6 @@ class Parser
 		$identifier = $node->value;
 		
 		$node = new VarAssignment();
-
-		
-
-
 
 		return $node;
 	}

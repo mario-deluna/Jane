@@ -58,4 +58,20 @@ class Node
 			$this->type === 'equalDivide' ||
 			$this->type === 'equalAppend';
 	}
+	
+	/**
+	 * Check if this is an assign node like equal
+	 *
+	 * @return bool
+	 */
+	public function isPrimitiveDefinition()
+	{
+		return 
+			$this->type === 'primitiveInt' || 
+			$this->type === 'primitiveFloat' ||
+			$this->type === 'primitiveDouble' ||
+			$this->type === 'primitiveString' ||
+			$this->type === 'primitiveArray' ||
+			$this->type === 'primitiveBool';
+	}
 }
