@@ -30,11 +30,13 @@ class Parser_Test extends \PHPUnit_Framework_TestCase
 	 * tests Parser
 	 */
 	public function test_varAssignment()
-	{	
-		// string
+	{
 		$parser = new Parser( 'myVar = "hello world"' );
+		$data = $parser->parse(); $data = $data[0];
 		
-		$parser = new Parser( 'myVar, myOtherVar, AndAnotherVar = "hello world"' );
-		var_dump( $parser->parse() );
+		$this->assertInstanceOf( 'Jane\\Node\\VarAssignment', $data );
+		$this->assertEquals( 'myVar', $data->identifier );
+		$this->assertEquals( '=', $data->assigner );
+		$this->assertEquals( '"hello world"', $data->value );
 	}
 }

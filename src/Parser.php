@@ -10,6 +10,8 @@
  *
  */
  
+use Jane\Parser\Exception;
+
 use Jane\Node\VarAssignment;
  
 class Parser
@@ -131,6 +133,17 @@ class Parser
 	}
 	
 	/**
+	 * Skip the next parser tokens
+	 *
+	 * @param int			$times
+	 * @return void
+	 */
+	protected function skipToken( $times = 1 )
+	{
+		$this->index += $times;
+	}
+	
+	/**
 	 * Parse an incoming identifier
 	 *
 	 * @param Jane\Node			$node
@@ -191,6 +204,7 @@ class Parser
 		
 		$node = new VarAssignment( $identifier, $assigner, $value );
 		
+		$this->skipToken(2);
 		
 		return $node;
 	}
