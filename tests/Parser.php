@@ -38,7 +38,16 @@ class Parser_Test extends \PHPUnit_Framework_TestCase
 		$this->assertEquals( 'myVar', $data->identifier );
 		$this->assertEquals( '=', $data->assigner );
 		$this->assertEquals( '"hello world"', $data->value );
+	}
+	
+	/**
+	 * tests Parser
+	 */
+	public function test_fncDefinition()
+	{
+		$parser = new Parser( 'fnc foo: a = "asd", int b {}' );
+		$data = $parser->parse(); //$data = $data[0];
 		
-		
+		print_r( $data ); 
 	}
 }

@@ -74,4 +74,16 @@ class Node
 			$this->type === 'primitiveArray' ||
 			$this->type === 'primitiveBool';
 	}
+	
+	/**
+	 * Check if this is an assign node like equal
+	 *
+	 * @return bool
+	 */
+	public function isAssignableValue()
+	{
+		return 
+			$this->type === 'identifier' || 
+			$this->type === 'string';
+	}
 }

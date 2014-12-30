@@ -13,6 +13,7 @@
 use Jane\Parser\Exception;
 
 use Jane\Node\VarAssignment;
+use Jane\Node\FunctionDefinition;
  
 class Parser
 {	
@@ -159,6 +160,7 @@ class Parser
 			throw new Exception( 'no identifier given for function on line:'.$node->line );
 		}
 		
+		$name = $this->nextToken()->value;
 		$arguments = array();
 		
 		// check if the function implements arguments
@@ -168,6 +170,7 @@ class Parser
 			$nextToken = $this->nextToken( $tokenIndex );
 			$argumentIndex = 0;
 			
+			// until the scope get opend
 			while ( $nextToken->type !== 'scopeOpen' ) 
 			{
 				if ( !isset( $arguments[$argumentIndex] ) )
@@ -180,28 +183,54 @@ class Parser
 				}
 				
 				// primitive dataType
-				if ( $nextToken->isPritiveDefinition() )
+				if ( $nextToken->isPrimitiveDefinition() )
 				{
 					$arguments[$argumentIndex]['dataType'] = $nextToken->type;
 				}
 				
 				// is the name ( identifier )
-				if ( $nextToken->type === 'identifier' )
+				elseif ( $nextToken->type === 'identifier' )
 				{
 					$arguments[$argumentIndex]['name'] = $nextToken->value;
 				}
 				
 				// next argument
-				if ( $nextToken->type === 'comma' )
+				elseif ( $nextToken->type === 'comma' )
 				{
 					$argumentIndex++;
+				}
+				
+				// default value
+				elseif ( $nextToken->type === 'equal' )
+				{
+					$tokenIndex++;
+					$nextToken = $this->nextToken( $tokenIndex );
+					
+					if ( !$nextToken->isAssignableValue() )
+					{
+						throw new Exception( 'unexpected "'.$nextToken->type.'" given at line '.$nextToken->line );
+					}
+					
+					$arguments[$argumentIndex]['default'] = $nextToken->value;
+				}
+				
+				// something else? nope
+				else
+				{
+					throw new Exception( 'unexpected "'.$nextToken->type.'" given at line '.$nextToken->line );
 				}
 				
 				// set next token
 				$tokenIndex++;
 				$nextToken = $this->nextToken( $tokenIndex );
 			}
+			
+			$this->skipToken( $tokenIndex-2 );
 		}
+		
+		$this->skipToken(2);
+		
+		return new FunctionDefinition( null, $name, $arguments );
 	}
 	
 	/**
