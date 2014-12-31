@@ -43,7 +43,7 @@ class Parser
 	 * 
 	 * @var Jane\Node
 	 */
-	protected $currentToken = array();
+	protected $currentToken = null;
 	
 	/**
 	 * All these token types implement a custom parser mehtod
@@ -54,6 +54,36 @@ class Parser
 		'identifier',
 		'function'
 	);
+	
+	/**
+	 * The constructor
+	 *
+	 * @var string 		$code
+	 * @return void
+	 */
+	public function __construct2( $code )
+	{
+		$lexer = new Lexer( $code );
+		$this->tokens = $lexer->getTokens();
+		
+		// filter some tokens out like whitespaces
+		foreach( $this->tokens as $key => $token )
+		{
+			if ( $token[0] === 'whitespace' )
+			{
+				unset( $this->tokens[$key] ); continue;
+			}
+			
+			// replace the token with a node 
+			$this->tokens[$key] = new Node( $token );
+		}
+		
+		// reset the keys
+		$this->tokens = array_values( $this->tokens );
+		
+		// count the real number of tokens
+		$this->tokenCount = count( $this->tokens );
+	}
 	
 	/**
 	 * The constructor
@@ -126,6 +156,17 @@ class Parser
 	}
 	
 	/**
+	 * Gets the current token based on the index not on the current 
+	 * iteration
+	 *
+	 * @return Jane\Node
+	 */
+	protected function getToken()
+	{
+		return $this->tokens[ $this->index ];
+	}
+	
+	/**
 	 * Get the next token based from the current index
 	 *
 	 * @param int 			$i
@@ -133,6 +174,11 @@ class Parser
 	 */
 	protected function nextToken( $i = 1 )
 	{
+		if ( !isset( $this->tokens[ $this->index + $i ] ) )
+		{
+			return false;
+		}
+		
 		return $this->tokens[ $this->index + $i ];
 	}
 	
@@ -185,12 +231,24 @@ class Parser
 				// primitive dataType
 				if ( $nextToken->isPrimitiveDefinition() )
 				{
+					// if the dataType has already been set
+					if ( isset( $arguments[$argumentIndex]['dataType'] ) )
+					{
+						throw new Exception( 'the data type for this argument has already been set on line '.$nextToken->line );
+					}
+					
 					$arguments[$argumentIndex]['dataType'] = $nextToken->type;
 				}
 				
 				// is the name ( identifier )
 				elseif ( $nextToken->type === 'identifier' )
 				{
+					// if the identifier has already been set
+					if ( isset( $arguments[$argumentIndex]['name'] ) )
+					{
+						throw new Exception( 'the identifier for this argument has already been set on line '.$nextToken->line );
+					}
+					
 					$arguments[$argumentIndex]['name'] = $nextToken->value;
 				}
 				
@@ -230,7 +288,50 @@ class Parser
 		
 		$this->skipToken(2);
 		
-		return new FunctionDefinition( null, $name, $arguments );
+		return new FunctionDefinition( null, $name, $arguments, $this->parseScopeBlock() );
+	}
+	
+	/**
+	 * Parse an scope block of code
+	 *
+	 * @return Jane\Node\ScopeBlock
+	 */
+	protected function parseScopeBlock()
+	{
+		if ( $this->getToken()->type !== 'scopeOpen' )
+		{
+			throw new Exception( 'unexpected "'.$this->getToken()->type.'" given at line '.$this->getToken()->line );
+		}
+		
+		$code = array( $this->getToken() );
+		
+		$scope = 1;
+		$tokenIteration = 1;
+		
+		while ( $scope > 0 ) 
+		{
+			if ( !$nextToken = $this->nextToken( $tokenIteration ) )
+			{
+				throw new Exception( 'unexpected end of code at line '.$this->nextToken( $tokenIteration-1 )->line );
+			}
+			
+			if ( $nextToken->type === 'scopeOpen' )
+			{
+				$scope++;
+			}
+			elseif ( $nextToken->type === 'scopeClose' )
+			{
+				$scope--;
+			}
+			
+			$code[] = $nextToken;
+			
+			$tokenIteration++;
+		}
+		
+		$this->skipToken( $tokenIteration );
+		
+		return $code;
 	}
 	
 	/**
@@ -275,8 +376,6 @@ class Parser
 			}
 		}
 		
-		
-		
 		return $node;
 	}
 	
@@ -313,5 +412,4 @@ class Parser
 
 		return $node;
 	}
-	
 }

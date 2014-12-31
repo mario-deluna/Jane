@@ -9,7 +9,41 @@
  * @copyright 		2014 ClanCats GmbH
  *
  */
+ 
+use Jane\Scope\Var;
+use Jane\Exception;
+ 
 class Scope
 {	
-	protected $variables;
+	/**
+	 * The variables in the curren scope
+	 * 
+	 * @var array
+	 */
+	protected $variables = array();
+	
+	/**
+	 * Adds a var to the current scope
+	 *
+	 * @param mixed...
+	 * @return void
+	 */
+	public function addVar()
+	{
+		$args = func_get_args();
+		
+		if ( count( $args ) > 1 )
+		{
+			
+		}
+		else
+		{
+			if ( ! ( $args[0] instanceof Var ) )
+			{
+				throw new Exception( 'Invalid var object assigned to scope.' );
+			}
+			
+			$this->variables[$args[0]->name] = $args[0];
+		}
+	}
 }

@@ -43,6 +43,13 @@ class FunctionDefinition implements NodeInterface
 	public $arguments = null;
 	
 	/**
+	 * The contained code
+	 * 
+	 * @var array
+	 */
+	public $code = null;
+	
+	/**
 	 * constructor
 	 *
 	 * @param string 		$returnType
@@ -51,10 +58,11 @@ class FunctionDefinition implements NodeInterface
 	 *
 	 * @return void
 	 */
-	public function __construct( $dataType, $name, $arguments )
+	public function __construct( $dataType, $name, $arguments, $code )
 	{
 		$this->dataType = $dataType;
 		$this->name = $name;
 		$this->arguments = $arguments;	
+		$this->code = $code;
 	}
 }
