@@ -12,6 +12,7 @@
  * @group Jane_Parser
  */
 
+use Jane\Jane;
 use Jane\Parser;
 use Jane\Lexer;
 
@@ -29,12 +30,24 @@ class Parser_Test extends \PHPUnit_Framework_TestCase
 	}
 	
 	/**
+	 * test shortcut
+	 */
+	public function test_staticShortcut()
+	{	
+		//$result = Jane::parse( 'foo = "hello world"' );
+		//$this->assertTrue( is_array( $result ) );
+	}
+	
+	
+	/**
 	 * tests Parser
 	 */
 	public function test_varAssignment()
 	{
 		$lexer = new Lexer( 'myVar = "hello world"' );
 		$parser = new Parser( $lexer->tokens() );
+		var_dump( $parser->parse() ); die;
+		
 		$data = $parser->parse(); $data = $data[0];
 		
 		$this->assertInstanceOf( 'Jane\\Node\\VarAssignment', $data );

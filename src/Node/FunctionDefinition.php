@@ -46,13 +46,6 @@ class FunctionDefinition extends Scope implements NodeInterface
 	public $arguments = null;
 	
 	/**
-	 * The contained code
-	 * 
-	 * @var array
-	 */
-	public $code = null;
-	
-	/**
 	 * constructor
 	 *
 	 * @param string 		$returnType

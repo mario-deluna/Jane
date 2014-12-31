@@ -76,6 +76,20 @@ class Jane
 	}
 	
 	/**
+	 * Parse jane code into an array
+	 *
+	 * @param string			$code
+	 * @return string
+	 */
+	public static function parse( $code )
+	{
+		$lexer = new Lexer( $code );
+		$parser = new Parser( $lexer->tokens() );
+		
+		return $parser->parse(); 
+	}
+	
+	/**
 	 * Run the jane transormer over a piece of code
 	 *
 	 * @param string			$code
@@ -84,16 +98,5 @@ class Jane
 	public static function transform( $code )
 	{
 		return static::create( $code )->transform(); 
-	}
-	
-	/**
-	 * Creat new Jane compiler
-	 *
-	 * @param string 		$code
-	 * @return Jane_Compiler
-	 */
-	public static function create( $code = null )
-	{
-		return new Jane_Compiler( $code );
 	}
 }

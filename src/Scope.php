@@ -23,6 +23,24 @@ class Scope
 	protected $variables = array();
 	
 	/**
+	 * The code items in this scope
+	 * 
+	 * @var array
+	 */
+	protected $nodes = array();
+	
+	/**
+	 * Adds a new node to the current scope
+	 *
+	 * @param Jane\Node 			$node
+	 * @return void
+	 */
+	public function addNode( $node )
+	{
+		$this->nodes[] = $node;
+	}
+	
+	/**
 	 * Recive the vars in this scope
 	 *
 	 * @return array[Var]

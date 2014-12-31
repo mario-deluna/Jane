@@ -1,5 +1,5 @@
-$name = "George Takei"
+name = "George Takei"
 
-$name = [explode: " ", $name]
+name = [explode: " ", $name]
 
 echo $name.0;

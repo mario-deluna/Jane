@@ -9,7 +9,7 @@
  * @copyright 		2014 ClanCats GmbH
  *
  */
- 
+
 use Jane\Parser\Exception;
 
 use Jane\Node\VarAssignment;
@@ -100,26 +100,38 @@ class Parser
 	}
 	
 	/**
-	 * Start the code parser and return the result 
+	 * Start the code parser and return the result  
 	 *
+	 * @param Scope 		$scope
+	 * 
 	 * @return array
 	 */
-	public function parse()
+	public function parse( $scope = null )
 	{
-		$scope = new Scope;
+		// if there is already a scope given
+		if ( !is_null( $scope ) )
+		{
+			if ( !( $scope instanceof Scope ) )
+			{
+				throw new Exception( 'The given scope is not an instance of Jane\\Scope' );
+			}
+		}
+		else
+		{
+			$scope = new Scope;
+		}
 		
-		$code = array();
-		
+		// start parsing trought the tokens
 		for( $this->index = 0; $this->index < $this->tokenCount; $this->index++ )
 		{
 			// update the current token
 			$this->currentToken = $this->tokens[ $this->index ];
 			
 			// add the recived code node
-			$code[] = $this->next();
+			$scope->addNode( $this->next() );
 		}
 		
-		return $code;
+		return $scope;
 	}
 	
 	/**
