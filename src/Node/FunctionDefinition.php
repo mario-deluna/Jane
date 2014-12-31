@@ -9,7 +9,10 @@
  * @copyright 		2014 ClanCats GmbH
  *
  */
-class FunctionDefinition implements NodeInterface
+ 
+use Jane\Scope;
+ 
+class FunctionDefinition extends Scope implements NodeInterface
 {
 	/**
 	 * Returns the name of the compiler function
@@ -55,6 +58,7 @@ class FunctionDefinition implements NodeInterface
 	 * @param string 		$returnType
 	 * @param string 		$name
 	 * @param string 		$arguments
+	 * @param array 		$code
 	 *
 	 * @return void
 	 */

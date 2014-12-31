@@ -155,7 +155,7 @@ class Lexer
 	 * @throws Jane\Lexer\Exception
 	 * @return array
 	 */
-	public function getTokens() 
+	public function tokens() 
 	{
 		$tokens = array();
 		

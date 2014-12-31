@@ -13,6 +13,7 @@
  */
 
 use Jane\Parser;
+use Jane\Lexer;
 
 class Parser_Test extends \PHPUnit_Framework_TestCase
 {
@@ -21,7 +22,8 @@ class Parser_Test extends \PHPUnit_Framework_TestCase
 	 */
 	public function test_consturct()
 	{	
-		$parser = new Parser( 'foo' );
+		$lexer = new Lexer( 'foo' );
+		$parser = new Parser( $lexer->tokens() );
 		
 		$this->assertInstanceOf( 'Jane\\Parser', $parser );
 	}
@@ -31,7 +33,8 @@ class Parser_Test extends \PHPUnit_Framework_TestCase
 	 */
 	public function test_varAssignment()
 	{
-		$parser = new Parser( 'myVar = "hello world"' );
+		$lexer = new Lexer( 'myVar = "hello world"' );
+		$parser = new Parser( $lexer->tokens() );
 		$data = $parser->parse(); $data = $data[0];
 		
 		$this->assertInstanceOf( 'Jane\\Node\\VarAssignment', $data );
@@ -45,7 +48,8 @@ class Parser_Test extends \PHPUnit_Framework_TestCase
 	 */
 	public function test_fncDefinition()
 	{
-		$parser = new Parser( 'fnc foo: a = "asd", int b {}' );
+		$lexer = new Lexer( 'fnc foo: a, b { a = b }' );
+		$parser = new Parser( $lexer->tokens() );
 		$data = $parser->parse(); //$data = $data[0];
 		
 		print_r( $data ); 

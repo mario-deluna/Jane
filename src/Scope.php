@@ -10,7 +10,7 @@
  *
  */
  
-use Jane\Scope\Var;
+use Jane\Scope\Variable;
 use Jane\Exception;
  
 class Scope
@@ -21,6 +21,16 @@ class Scope
 	 * @var array
 	 */
 	protected $variables = array();
+	
+	/**
+	 * Recive the vars in this scope
+	 *
+	 * @return array[Var]
+	 */
+	public function getVars()
+	{
+		return $this->variables;
+	}
 	
 	/**
 	 * Adds a var to the current scope
@@ -49,11 +59,11 @@ class Scope
 			}
 			
 			// create and add the new var
-			$this->variables[ $name ] = new Var( $name, $dataType );
+			$this->variables[ $name ] = new Variable( $name, $dataType );
 		}
 		else
 		{
-			if ( ! ( $args[0] instanceof Var ) )
+			if ( ! ( $args[0] instanceof Variable ) )
 			{
 				throw new Exception( 'Invalid var object assigned to scope.' );
 			}

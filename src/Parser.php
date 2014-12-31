@@ -57,48 +57,32 @@ class Parser
 	
 	/**
 	 * The constructor
+	 * You have to initialize the Parser with an array of lexed tokens.
+	 * 
+	 * example tokens:
+	 *     {
+	 *         // { type, value, line }
+	 *         { identifier, foo, 1 },
+	 *         { equal, =, 1 },	 
+	 *         { string, =, 'bar' },	 
+	 *     }
 	 *
-	 * @var string 		$code
+	 * @var array[array] 			$tokens
 	 * @return void
 	 */
-	public function __construct2( $code )
-	{
-		$lexer = new Lexer( $code );
-		$this->tokens = $lexer->getTokens();
+	public function __construct( array $tokens )
+	{	
+		$this->tokens = $tokens;
 		
-		// filter some tokens out like whitespaces
 		foreach( $this->tokens as $key => $token )
 		{
-			if ( $token[0] === 'whitespace' )
+			// it might already have been converted to an node
+			if ( is_object( $token ) )
 			{
-				unset( $this->tokens[$key] ); continue;
+				continue;
 			}
 			
-			// replace the token with a node 
-			$this->tokens[$key] = new Node( $token );
-		}
-		
-		// reset the keys
-		$this->tokens = array_values( $this->tokens );
-		
-		// count the real number of tokens
-		$this->tokenCount = count( $this->tokens );
-	}
-	
-	/**
-	 * The constructor
-	 *
-	 * @var string 		$code
-	 * @return void
-	 */
-	public function __construct( $code )
-	{
-		$lexer = new Lexer( $code );
-		$this->tokens = $lexer->getTokens();
-		
-		// filter some tokens out like whitespaces
-		foreach( $this->tokens as $key => $token )
-		{
+			// we skip all whitespaces
 			if ( $token[0] === 'whitespace' )
 			{
 				unset( $this->tokens[$key] ); continue;
@@ -331,7 +315,15 @@ class Parser
 		
 		$this->skipToken( $tokenIteration );
 		
-		return $code;
+		// parse the code
+		// first we have to remove the open and close tokens 
+		$code = array_slice( $code, 1, -1 );
+		
+		// create a new parser
+		$parser = new static( $code );
+		
+		// return the parsed block content
+		return $parser->parse();
 	}
 	
 	/**

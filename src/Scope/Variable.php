@@ -9,7 +9,7 @@
  * @copyright 	2014 ClanCats GmbH
  *
  */
-class Var
+class Variable
 {
 	
 }
