@@ -34,7 +34,22 @@ class Scope
 		
 		if ( count( $args ) > 1 )
 		{
+			if ( !isset( $args[0] ) )
+			{
+				throw new Exception( 'No name given for var.' );
+			}
 			
+			$name = $args[0];
+			$dataType = null;
+			
+			// data type
+			if ( isset( $args[1] ) )
+			{
+				$dataType = $args[1];
+			}
+			
+			// create and add the new var
+			$this->variables[ $name ] = new Var( $name, $dataType );
 		}
 		else
 		{
@@ -43,6 +58,7 @@ class Scope
 				throw new Exception( 'Invalid var object assigned to scope.' );
 			}
 			
+			// add the var
 			$this->variables[$args[0]->name] = $args[0];
 		}
 	}
