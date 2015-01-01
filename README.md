@@ -1,7 +1,7 @@
 Jane
 ====
 
-**Jane is At an really early stage of development!**
+**Jane is at an really early stage of development!**
 
 Well this is probably a brain fart, but let me explain:
 
