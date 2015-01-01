@@ -46,6 +46,13 @@ class Parser
 	protected $currentToken = null;
 	
 	/**
+	 * The current scope
+	 * 
+	 * @var Jane\Scope
+	 */
+	protected $currentScope = null;
+	
+	/**
 	 * All these token types implement a custom parser mehtod
 	 * 
 	 * @var array
@@ -102,9 +109,9 @@ class Parser
 	/**
 	 * Start the code parser and return the result  
 	 *
-	 * @param Scope 		$scope
+	 * @param Jane\Scope 		$scope
 	 * 
-	 * @return array
+	 * @return Jane\Scope
 	 */
 	public function parse( $scope = null )
 	{
@@ -121,6 +128,9 @@ class Parser
 			$scope = new Scope;
 		}
 		
+		// set the current scope
+		$this->currentScope = $scope;
+		
 		// start parsing trought the tokens
 		for( $this->index = 0; $this->index < $this->tokenCount; $this->index++ )
 		{
@@ -128,10 +138,10 @@ class Parser
 			$this->currentToken = $this->tokens[ $this->index ];
 			
 			// add the recived code node
-			$scope->addNode( $this->next() );
+			$this->currentScope->addNode( $this->next() );
 		}
 		
-		return $scope;
+		return $this->currentScope;
 	}
 	
 	/**
@@ -143,9 +153,29 @@ class Parser
 	{
 		$node = $this->currentToken;
 		
-		if ( in_array( $node->type, $this->customParserActionTokens ) )
+		// if we have a primitve dataType it might be a variable
+		// or a function declaration coming 
+		if ( substr( $node->type, 0, strlen( 'primitive' ) ) === 'primitive' )
 		{
-			$node = call_user_func( array( $this, 'parse'.ucfirst( $node->type ) ), $node );
+			// function definition incoming?
+			if ( $this->nextToken()->type === 'function' )
+			{
+				$this->skipToken();
+				$this->praseFunction( $node->type );
+			}
+			
+			// var declaration
+			elseif ( $this->nextToken()->type === 'identifier' )
+			{
+				$this->skipToken();
+				$this->parseVarAssignment( $node->type );
+			}
+		}
+		
+		// default parser action
+		elseif ( in_array( $node->type, $this->customParserActionTokens ) )
+		{
+			$node = call_user_func( array( $this, 'parse'.ucfirst( $node->type ) ) );
 		}
 		
 		return $node;
@@ -344,12 +374,17 @@ class Parser
 	 * @param Jane\Node			$node
 	 * @return Jane\Node
 	 */
-	protected function parseIdentifier( $node )
+	protected function parseIdentifier()
 	{
+		if ( !$this->nextToken() )
+		{
+			throw new Exception( 'unexpected "'.$this->getToken()->type.'" given at line '.$this->getToken()->line );
+		}
+		
 		// check if var assignment
 		if ( $this->nextToken()->isAssignNode() )
 		{
-			return $this->parseVarAssignment( $node );
+			return $this->parseVarAssignment( $this->currentToken );
 		}
 		
 		// check if identifier list followed by an assignment
@@ -370,7 +405,7 @@ class Parser
 					{
 						// if there is no other token than comma or identifiers until
 						// an equal appears we have a list assignment.
-						return $this->parseVarListAssignment( $node );
+						return $this->parseVarListAssignment( $this->currentToken );
 					}
 				}
 				else
@@ -386,17 +421,26 @@ class Parser
 	/**
 	 * Parse an var assignment
  	 * 
- 	 * @param Jane\Node
+ 	 * @param string						$dataType
+ 	 *
  	 * @return Jane\Node\VarAssignment
 	 */
-	protected function parseVarAssignment( $node )
+	protected function parseVarAssignment( $dataType = null )
 	{	
+		$node = $this->currentToken;
+		
+		// data
 		$identifier = $node->value;
 		$assigner = $this->nextToken()->value;
 		$value = $this->nextToken(2)->value;
 		
-		$node = new VarAssignment( $identifier, $assigner, $value );
+		// also add the new var to the scope
+		$var = $this->currentScope->addVar( $identifier, $dataType );
 		
+		// create assignment node
+		$node = new VarAssignment( $var, $assigner, $value );
+		
+		// skip used tokens
 		$this->skipToken(2);
 		
 		return $node;

@@ -24,9 +24,9 @@ class VarAssignment implements NodeInterface
 	/**
 	 * The Var identifier
 	 *
-	 * @var string
+	 * @var Jane\Scope\Var
 	 */
-	public $identifier = null;
+	public $var = null;
 	
 	/**
 	 * The var assigner ( =, +=, -= etc. )
@@ -51,9 +51,9 @@ class VarAssignment implements NodeInterface
 	 *
 	 * @return void
 	 */
-	public function __construct( $identifier, $assigner, $value )
+	public function __construct( $var, $assigner, $value )
 	{
-		$this->identifier = $identifier;
+		$this->var = $var;
 		$this->assigner = $assigner;
 		$this->value = $value;	
 	}

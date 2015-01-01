@@ -54,19 +54,21 @@ class Scope
 	 * Adds a var to the current scope
 	 *
 	 * @param mixed...
-	 * @return void
+	 * @return Jane\Scope\Var
 	 */
 	public function addVar()
 	{
 		$args = func_get_args();
 		
-		if ( count( $args ) > 1 )
+		if ( !isset( $args[0] ) )
 		{
-			if ( !isset( $args[0] ) )
-			{
-				throw new Exception( 'No name given for var.' );
-			}
-			
+			throw new Exception( 'No name given for var.' );
+		}
+		
+		$var = null;
+		
+		if ( !is_object( $args[0] ) )
+		{
 			$name = $args[0];
 			$dataType = null;
 			
@@ -77,7 +79,7 @@ class Scope
 			}
 			
 			// create and add the new var
-			$this->variables[ $name ] = new Variable( $name, $dataType );
+			$var = $this->variables[ $name ] = new Variable( $name, $dataType );
 		}
 		else
 		{
@@ -87,7 +89,9 @@ class Scope
 			}
 			
 			// add the var
-			$this->variables[$args[0]->name] = $args[0];
+			$var = $this->variables[$args[0]->name] = $args[0];
 		}
+		
+		return $var;
 	}
 }

@@ -34,21 +34,26 @@ class Parser_Test extends \PHPUnit_Framework_TestCase
 	 */
 	public function test_staticShortcut()
 	{	
-		//$result = Jane::parse( 'foo = "hello world"' );
-		//$this->assertTrue( is_array( $result ) );
+		$result = Jane::parse( 'foo = "hello world"' );
+		$this->assertInstanceOf( 'Jane\\Scope', $result );
 	}
-	
 	
 	/**
 	 * tests Parser
 	 */
 	public function test_varAssignment()
 	{
-		$lexer = new Lexer( 'myVar = "hello world"' );
-		$parser = new Parser( $lexer->tokens() );
-		var_dump( $parser->parse() ); die;
+		$scope = Jane::parse( 'myVar = "hello"
 		
-		$data = $parser->parse(); $data = $data[0];
+		name = "mario"
+		' );
+		
+		$this->assertInstanceOf( 'Jane\\Scope', $scope );
+		
+		
+		print_r( $scope ); die;
+		
+		$data = $parser->parse();
 		
 		$this->assertInstanceOf( 'Jane\\Node\\VarAssignment', $data );
 		$this->assertEquals( 'myVar', $data->identifier );

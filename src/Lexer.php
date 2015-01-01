@@ -86,6 +86,7 @@ class Lexer
 		"/^(->)/" 						=> "blockstart",
 		"/^(::)/" 						=> "doubleseperator",
 		"/^(:)/" 						=> "seperator",
+		"/^(\|)/" 						=> "concat",
 		"/^(,)/" 						=> "comma",
 		"/^(@)/" 						=> "arrayIndicator",
 		"/^(\w+)/" 						=> "identifier",
