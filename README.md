@@ -1,11 +1,13 @@
 Jane
 ====
 
-**Jane is not done yet!**
+**Jane is At an really early stage of development!**
 
-Jane is a programming language based on php, and compiles into php.
+Well this is probably a brain fart, but let me explain:
 
-Well this is probably a brain fart, but lets see the syntax:
+Jane is a programming language that compiles / transforms into PHP or JS. I know this sounds stupid, well it probably is. But hey this way it runs on almost every hosting.
+
+The language is designed to be dead easy to learn. I don't see any production use case for Jane at the moment, but its definitely fun to try out. The really cool thing about jane is that everybody can modify the language without having to recompile anything.
 
 ## Syntax
 
