@@ -2,4 +2,4 @@ name = "George Takei"
 
 name = [explode: " ", $name]
 
-echo $name.0;
+echo name.0;
