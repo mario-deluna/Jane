@@ -9,6 +9,8 @@ Jane is a programming language that compiles / transforms into PHP or JS. I know
 
 The language is designed to be dead easy to learn. I don't see any production use case for Jane at the moment, but its definitely fun to try out. The really cool thing about jane is that everybody can modify the language without having to recompile anything.
 
+_Again: "early stage" a lot of stuff is not coded pretty well._
+
 ## Syntax
 
 ### Vars
