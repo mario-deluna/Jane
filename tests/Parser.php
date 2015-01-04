@@ -43,9 +43,11 @@ class Parser_Test extends \PHPUnit_Framework_TestCase
 	 */
 	public function test_varAssignment()
 	{
-		$scope = Jane::parse( 'myVar = "hello"
+		$scope = Jane::parse( '
 		
-		name = "mario"
+		int index = 0
+		string name = "mario"
+
 		' );
 		
 		$this->assertInstanceOf( 'Jane\\Scope', $scope );
