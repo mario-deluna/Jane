@@ -1,1 +1,33 @@
-[print: 'Hello World']
+/**
+ * Jane Hello World example
+ *
+ * @author Mario Döring
+ */
+
+use Jane/Utils/Input
+
+string name = [Input get:name] ? "World"
+
+[print: 'Hello '|name]
+
+## PHP equivalent
+
+<?php
+
+use Jane/Utils/Input;
+use Jane/Exception/RuntimeException;
+
+$name = "";
+
+if ( !$jn_input_get = Input::get( 'name' ) )
+{
+	$jn_input_get = "World";
+}
+
+$name = $jn_input_get;
+unset( $jn_input_get );
+
+if ( !is_string( $name ) )
+{
+	throw new RuntimeException( 'invalid string passed to $name' );
+}
