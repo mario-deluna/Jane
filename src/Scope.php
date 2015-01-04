@@ -31,13 +31,41 @@ class Scope
 	
 	/**
 	 * Adds a new node to the current scope
+	 * By passing an array every item gets added on its own.
 	 *
-	 * @param Jane\Node 			$node
+	 * @param Jane\Node|array 			$nodes
 	 * @return void
 	 */
-	public function addNode( $node )
+	public function addNode( $nodes )
 	{
-		$this->nodes[] = $node;
+		if ( !is_array( $nodes ) )
+		{
+			$nodes = array( $nodes );
+		}
+
+		foreach( $nodes as $node )
+		{
+			$this->nodes[] = $node;
+		}
+	}
+
+	/**
+	 * Check if the var already exists in scope
+	 */
+	public function hasVar( $identifier )
+	{
+		return isset( $this->variables[ $identifier ] );
+	}
+
+	/**
+	 * Get a var object
+	 *
+	 * @param string 			$identifier
+	 * @return array[Var]
+	 */
+	public function getVar( $identifier )
+	{
+		return $this->variables[ $identifier ];
 	}
 	
 	/**

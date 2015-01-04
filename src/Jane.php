@@ -31,6 +31,12 @@ class Jane
 		
 		// how many function can a function maximal contain.
 		'function_call_depth' => 8,
+
+		// You can enbale the var overwrite. This might not work
+		// in some languages but for php its safe.
+		'allow_var_overwrite' => false,
+
+		
 	);
 	
 	/**

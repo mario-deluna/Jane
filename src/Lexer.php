@@ -48,6 +48,12 @@ class Lexer
 		// strings
 		'/^"[^"\\\\]*(?:\\\\.[^"\\\\]*)*"/' => 'string',
 		"/^'[^'\\\\]*(?:\\\\.[^'\\\\]*)*'/" => 'string',
+		// numbers
+		"/^(([1-9]+\.[0-9]*)|([1-9]*\.[0-9]+)|([1-9]+))([eE][-+]?[0-9]+)?/" => 'float',
+		"/^\d+/" => "integer",
+		// bool
+		"/^(yes)/" => "boolTrue",
+		"/^(no)/" => "boolFalse",
 		
 		// primitives
 		"/^(int)/" => "primitiveInt",

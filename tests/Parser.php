@@ -43,10 +43,22 @@ class Parser_Test extends \PHPUnit_Framework_TestCase
 	 */
 	public function test_varAssignment()
 	{
+		/*$scope = Jane::parse( '
+		
+		int index = 0, max = 5
+		string name = "mario"
+		float money = 1.5
+		bool active = yes
+
+		' );*/
+
 		$scope = Jane::parse( '
 		
-		int index = 0
-		string name = "mario"
+		var foo, bar
+
+		int index, min, max
+
+		string name
 
 		' );
 		

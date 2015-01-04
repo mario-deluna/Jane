@@ -12,6 +12,7 @@
 
 use Jane\Parser\Exception;
 
+use Jane\Node\VarDeclaration;
 use Jane\Node\VarAssignment;
 use Jane\Node\FunctionDefinition;
  
@@ -51,6 +52,7 @@ class Parser
 	 * @var array
 	 */
 	protected $customParserActionTokens = array(
+		'variable',
 		'identifier',
 		'function'
 	);
@@ -164,6 +166,27 @@ class Parser
 	{
 		return $this->index >= $this->tokenCount;
 	}
+
+	/**
+	 * Check if the current token is the end of a expression
+	 *
+	 * @return bool
+	 */
+	protected function isEndOfExpression()
+	{
+		return $this->currentToken()->type === 'linebreak' || $this->parserIsDone();
+	}
+
+	/**
+	 * Create new unexpected token exception
+	 *
+	 * @param Jane\Node 				$token
+	 * @return Jane\Parser\Exception;
+	 */
+	protected function errorUnexpectedToken( $token )
+	{
+		return new Exception( 'unexpected "'.$token->type.'" given at line '.$token->line );
+	}
 	
 	/**
 	 * Start the code parser and return the result  
@@ -224,7 +247,7 @@ class Parser
 			elseif ( $this->nextToken()->type === 'identifier' )
 			{
 				$this->skipToken();
-				return $this->parseVarAssignment( $node->type );
+				return $this->parseVarDeclaration( $node->type );
 			}
 		}
 		
@@ -435,15 +458,26 @@ class Parser
 		
 		return $node;
 	}
-	
+
 	/**
-	 * Parse an var assignment
- 	 * 
+	 * Parse a var declaration
+ 	 *
+ 	 * @return Jane\Node\VarAssignment
+	 */
+	protected function parseVariable()
+	{
+		$this->skipToken();
+		return $this->parseVarDeclaration();
+	}
+
+	/**
+	 * Parse a var declaration
+	 * 
  	 * @param string						$dataType
  	 *
  	 * @return Jane\Node\VarAssignment
 	 */
-	protected function parseVarAssignment( $dataType = null )
+	protected function parseVarDeclaration( $dataType = null )
 	{
 		// if there is a dataType check if its valid
 		if ( !is_null( $dataType ) )
@@ -453,10 +487,82 @@ class Parser
 				throw new Exception( 'Invalid data type '.$dataType.' given at line'.$this->currentToken()->line );
 			}
 		}
-		
-		// data
+
+		$vars = array();
+
+		while ( !$this->isEndOfExpression() )
+		{
+			// we have now all needed data to declar the var
+			if ( $this->currentToken()->type === 'identifier' )
+			{
+				$identifier = $this->currentToken()->value;
+
+				// check for overwrite
+				if ( $this->currentScope->hasVar( $identifier ) )
+				{
+					if ( !Jane::config( 'allow_var_overwrite' ) )
+					{
+						throw new Exception( 'Variable "'.$identifier.'" has already been declared. line: '.$this->currentToken()->line );
+					}
+				}
+
+				// create a var object by adding it to the current scope
+				$var = $this->currentScope->addVar( $identifier, $dataType );
+
+				$vars[] = new VarDeclaration( $var );
+
+				// if there is a next token
+				if ( $nextToken = $this->nextToken() )
+				{
+					// if the next node is some assign thingy
+					if ( $nextToken->isAssignNode() )
+					{
+						$vars = array_merge( $vars, $this->parseVarAssignment() );
+					}
+				}
+			}
+
+			// there might also follow another declartation
+			elseif ( $this->currentToken()->type === 'comma' )
+			{
+				$this->skipToken(); // skip the comma
+				$vars = array_merge( $vars, $this->parseVarDeclaration( $dataType ) );
+				break; // break the loop
+			}
+
+			// if something else syntax error
+			else
+			{
+				throw $this->errorUnexpectedToken( $this->currentToken() );
+			}
+
+			$this->skipToken();
+		}
+
+		return $vars;
+	}
+	
+	/**
+	 * Parse an var assignment
+ 	 * 
+ 	 * @return Jane\Node\VarAssignment
+	 */
+	protected function parseVarAssignment()
+	{
+		// no identifier?
+		if ( $this->currentToken()->type !== 'identifier' )
+		{
+			return errorUnexpectedToken( $this->currentToken() );
+		}
+
+		// check if the var is declared
+		if ( !$var = $this->currentScope->getVar( $this->currentToken()->value ) )
+		{
+			throw new Exception( 'Assignement to undeclared identifier "'.$this->currentToken()->value.'" on line: '.$this->currentToken()->line );
+		}
+
 		$identifier = $this->currentToken()->value;
-		$assigner = $this->nextToken(1)->value;
+		$assigner = $this->nextToken(1)->type;
 
 		$this->skipToken(2);
 
@@ -464,16 +570,27 @@ class Parser
 		$var = $this->currentScope->addVar( $identifier, $dataType );
 
 		$values = array();
+		$assignments = array();
 
 		// now parse everything until the end of the expression
 		while( $this->currentToken()->type !== 'linebreak' && !$this->parserIsDone() )
 		{
+			// there might follow another declaration
+			if ( $this->currentToken()->type === 'comma' )
+			{
+				$this->skipToken();
+				$assignments = $assignments + $this->parseVarAssignment( $dataType );
+				break;
+			}
+
 			$values[] = $this->currentToken();
 			$this->skipToken();
 		}
+
+		array_unshift( $assignments, new VarAssignment( $var, $assigner, $values ) );
 		
 		// create assignment node
-		return new VarAssignment( $var, $assigner, $values );
+		return $assignments;
 	}
 
 	/**

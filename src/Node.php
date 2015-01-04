@@ -86,4 +86,16 @@ class Node
 			$this->type === 'identifier' || 
 			$this->type === 'string';
 	}
+
+	/**
+	 * Check if this is an assign node like equal
+	 *
+	 * @return bool
+	 */
+	public function isBool()
+	{
+		return 
+			$this->type === 'boolTrue' || 
+			$this->type === 'boolFalse';
+	}
 }
