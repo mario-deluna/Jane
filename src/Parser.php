@@ -172,8 +172,15 @@ class Parser
 	 *
 	 * @return bool
 	 */
-	protected function isEndOfExpression()
+	protected function isEndOfExpression( $includeComma = false )
 	{
+		if ( $includeComma ) 
+		{
+			return $this->currentToken()->type === 'linebreak' ||
+				$this->currentToken()->type === 'comma' || 
+				$this->parserIsDone();
+		}
+
 		return $this->currentToken()->type === 'linebreak' || $this->parserIsDone();
 	}
 
@@ -555,42 +562,32 @@ class Parser
 			return errorUnexpectedToken( $this->currentToken() );
 		}
 
+		// check if next token is an assigner
+		if ( !$this->nextToken()->isAssignNode() )
+		{
+			return errorUnexpectedToken( $this->nextToken() );
+		}
+
 		// check if the var is declared
 		if ( !$var = $this->currentScope->getVar( $this->currentToken()->value ) )
 		{
 			throw new Exception( 'Assignement to undeclared identifier "'.$this->currentToken()->value.'" on line: '.$this->currentToken()->line );
 		}
 
-		$identifier = $this->currentToken()->value;
-		$assigner = $this->nextToken(1)->type;
-
-		$this->skipToken(2);
-
-		// create a var object by adding it to the current scope
-		$var = $this->currentScope->addVar( $identifier, $dataType );
+		$assigner = $this->nextToken(1)->type; 
+		$this->skipToken(2); // skip the identifier and the assigner
 
 		$values = array();
-		$assignments = array();
 
-		// now parse everything until the end of the expression
-		while( $this->currentToken()->type !== 'linebreak' && !$this->parserIsDone() )
+		// now parse everything until the end of the expression or the next comma
+		while ( !$this->isEndOfExpression( true ) )
 		{
-			// there might follow another declaration
-			if ( $this->currentToken()->type === 'comma' )
-			{
-				$this->skipToken();
-				$assignments = $assignments + $this->parseVarAssignment( $dataType );
-				break;
-			}
-
 			$values[] = $this->currentToken();
 			$this->skipToken();
 		}
-
-		array_unshift( $assignments, new VarAssignment( $var, $assigner, $values ) );
 		
 		// create assignment node
-		return $assignments;
+		return array( new VarAssignment( $var, $assigner, $values ) );
 	}
 
 	/**

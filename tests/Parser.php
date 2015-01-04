@@ -23,7 +23,7 @@ class Parser_Test extends \PHPUnit_Framework_TestCase
 	 */
 	public function test_consturct()
 	{	
-		$lexer = new Lexer( 'foo' );
+		$lexer = new Lexer( 'var foo' );
 		$parser = new Parser( $lexer->tokens() );
 		
 		$this->assertInstanceOf( 'Jane\\Parser', $parser );
@@ -34,7 +34,7 @@ class Parser_Test extends \PHPUnit_Framework_TestCase
 	 */
 	public function test_staticShortcut()
 	{	
-		$result = Jane::parse( 'foo = "hello world"' );
+		$result = Jane::parse( 'string foo = "hello world"' );
 		$this->assertInstanceOf( 'Jane\\Scope', $result );
 	}
 	
@@ -58,7 +58,13 @@ class Parser_Test extends \PHPUnit_Framework_TestCase
 
 		int index, min, max
 
-		string name
+		string name = "mario", default = "foo"
+
+		float money = .5
+
+		index = 1
+		min = 1
+		max = 5
 
 		' );
 		
