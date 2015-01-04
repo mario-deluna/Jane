@@ -73,16 +73,19 @@ class Lexer
 		"/^(\.=)/" => "equalAppend",
 		"/^(=)/" => "equal",
 		
-		// function
+		// declaration
 		"/^(fnc)/" => "function",
-		
+		"/^(var)/" => "variable",
+		"/^(class)/" => "class",
+		"/^(interface)/" => "interface",
+
 		// scope
 		"/^({)/" 						=> "scopeOpen",
 		"/^(})/" 						=> "scopeClose",
 		
 		//
+		"/^(\r\n|\n|\r)/" 				=> "linebreak",
 		"/^(\s+)/" 						=> "whitespace",
-		"/^(\n+)/" 						=> "linebreak",
 		"/^(->)/" 						=> "blockstart",
 		"/^(::)/" 						=> "doubleseperator",
 		"/^(:)/" 						=> "seperator",
