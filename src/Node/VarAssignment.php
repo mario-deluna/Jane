@@ -10,17 +10,7 @@
  *
  */
 class VarAssignment implements NodeInterface
-{
-	/**
-	 * Returns the name of the compiler function
-	 *
-	 * @return string
-	 */
-	public function compiler()
-	{
-		return "varAssignment";
-	}
-	
+{	
 	/**
 	 * The Var identifier
 	 *

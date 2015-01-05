@@ -14,14 +14,14 @@ class Variable
 	/**
 	 * The var identifier
 	 *
-	 * @var array
+	 * @var string
 	 */
 	protected $identifier = null;
 	
 	/**
 	 * The var data type
 	 *
-	 * @var array
+	 * @var string
 	 */
 	protected $dataType = null;
 	
@@ -37,5 +37,25 @@ class Variable
 	{
     	$this->identifier = $identifier;
     	$this->dataType = $dataType;
+	}
+	
+	/**
+	 * Returns the var identifier
+	 *
+	 * @return string
+	 */
+	public function identifier()
+	{
+		return $this->identifier;
+	}
+	
+	/**
+	 * Returns the var data type
+	 *
+	 * @return string
+	 */
+	public function dataType()
+	{
+		return $this->dataType;
 	}
 }

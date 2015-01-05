@@ -30,6 +30,16 @@ class Scope
 	protected $nodes = array();
 	
 	/**
+	 * Return all nodes
+	 *
+	 * @return array
+	 */
+	public function getNodes()
+	{
+		return $this->nodes;
+	}
+	
+	/**
 	 * Adds a new node to the current scope
 	 * By passing an array every item gets added on its own.
 	 *
@@ -47,6 +57,16 @@ class Scope
 		{
 			$this->nodes[] = $node;
 		}
+	}
+	
+	/**
+	 * Recive the vars in this scope
+	 *
+	 * @return array[Var]
+	 */
+	public function getVars()
+	{
+		return $this->variables;
 	}
 
 	/**
@@ -66,16 +86,6 @@ class Scope
 	public function getVar( $identifier )
 	{
 		return $this->variables[ $identifier ];
-	}
-	
-	/**
-	 * Recive the vars in this scope
-	 *
-	 * @return array[Var]
-	 */
-	public function getVars()
-	{
-		return $this->variables;
 	}
 	
 	/**

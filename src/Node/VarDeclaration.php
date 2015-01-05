@@ -10,17 +10,7 @@
  *
  */
 class VarDeclaration implements NodeInterface
-{
-	/**
-	 * Returns the name of the compiler function
-	 *
-	 * @return string
-	 */
-	public function compiler()
-	{
-		return "VarDeclaration";
-	}
-	
+{	
 	/**
 	 * The Var identifier
 	 *

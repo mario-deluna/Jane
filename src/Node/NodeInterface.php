@@ -13,10 +13,5 @@
 
 interface NodeInterface
 {
-	/**
-	 * Returns the name of the compiler function
-	 *
-	 * @return string
-	 */
-	public function compiler();
+	
 }

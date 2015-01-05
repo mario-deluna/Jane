@@ -176,12 +176,12 @@ class Parser
 	{
 		if ( $includeComma ) 
 		{
-			return $this->currentToken()->type === 'linebreak' ||
-				$this->currentToken()->type === 'comma' || 
-				$this->parserIsDone();
+			return $this->parserIsDone() ||
+				$this->currentToken()->type === 'linebreak' ||
+				$this->currentToken()->type === 'comma';
 		}
 
-		return $this->currentToken()->type === 'linebreak' || $this->parserIsDone();
+		return $this->parserIsDone() || $this->currentToken()->type === 'linebreak';
 	}
 
 	/**

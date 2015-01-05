@@ -39,7 +39,18 @@ class Compiler
 		
 		foreach( $this->code as $node )
 		{
-			$result .= call_user_func( array( $this, 'compile'.ucfirst( $node->compiler() ) ), $node );
+			$compilerFnc;
+			
+			if ( $node instanceOf Node )
+			{
+				$compilerFnc = $node->type;
+			}
+			else
+			{
+				$compilerFnc = array_pop( explode( "\\", get_class( $node ) ) );
+			}
+			
+			$result .= call_user_func( array( $this, 'compile'.ucfirst( $compilerFnc ) ), $node );
 		}
 		
 		return $result;
