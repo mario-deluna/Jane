@@ -5,11 +5,11 @@ Jane
 
 Well this is probably a brain fart, but let me explain:
 
-Jane is a programming language that compiles / transforms into PHP or JS. I know this sounds stupid, well it probably is. But hey this way it runs on almost every hosting.
+Jane is a programming language that compiles / transforms into PHP or JS. I know this sounds stupid, well it probably is. But hey this way it runs on almost everywhere.
 
-The language is designed to be dead easy to learn. I don't see any production use case for Jane at the moment, but its definitely fun to try out. The really cool thing about jane is that everybody can modify the language without having to recompile anything.
+The language is designed to be dead easy to learn. I don't see any production use case for Jane at the moment, but its definitely fun to try out. The really cool thing about jane is that everybody can easly modify the language.
 
-_Again: "early stage" a lot of stuff is not coded pretty well._
+_Again: "early stage" a lot of stuff is not coded pretty well or even finished._
 
 ## Syntax
 
