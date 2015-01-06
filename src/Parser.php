@@ -241,7 +241,7 @@ class Parser
 		
 		// if we have a primitve dataType it might be a variable
 		// or a function declaration coming 
-		if ( substr( $node->type, 0, strlen( 'primitive' ) ) === 'primitive' )
+		if ( $this->nextToken() && substr( $node->type, 0, strlen( 'primitive' ) ) === 'primitive' )
 		{
 			// function definition incoming?
 			if ( $this->nextToken()->type === 'function' )
@@ -496,6 +496,12 @@ class Parser
 		}
 
 		$vars = array();
+		
+		// current token has to bee an identifier!
+		if ( $this->currentToken()->type !== 'identifier' )
+		{
+			throw $this->errorUnexpectedToken( $this->currentToken() );
+		}
 
 		while ( !$this->isEndOfExpression() )
 		{
@@ -531,7 +537,7 @@ class Parser
 
 			// there might also follow another declartation
 			elseif ( $this->currentToken()->type === 'comma' )
-			{
+			{		
 				$this->skipToken(); // skip the comma
 				$vars = array_merge( $vars, $this->parseVarDeclaration( $dataType ) );
 				break; // break the loop
