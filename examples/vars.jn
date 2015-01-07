@@ -1,5 +1,1 @@
-name = "George Takei"
-
-name = [explode: " ", $name]
-
-echo name.0;
+string name = "jane", age = 18

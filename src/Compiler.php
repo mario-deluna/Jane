@@ -9,23 +9,26 @@
  * @copyright 		2014 - 2015 ClanCats GmbH
  *
  */
+ 
+use Jane\Scope\Variable;
+ 
 class Compiler
 {
 	/**
-	 * The parsed code
+	 * The parsed scope
 	 *
-	 * @var array[Jane\Node]
+	 * @var Jane\Scope 
 	 */
-	protected $code = array();
+	protected $scope = null;
 	
 	/**
 	 * Create new compiler
 	 *
-	 * @param string 
+	 * @param Jane\Scope 
 	 */
-	public function __construct( array $code )
+	public function __construct( $scope )
 	{
-		$this->code = $code;
+		$this->scope = $scope;
 	}
 	
 	/**
@@ -37,7 +40,22 @@ class Compiler
 	{
 		$result = "";
 		
-		foreach( $this->code as $node )
+		$nodes = $this->scope->getNodes();
+		
+		$declarations = array();
+		
+		// in php we can take all declarations to the top of the scope
+		foreach( $nodes as $key => $node )
+		{
+			if ( $node instanceOf Node\VarDeclaration )
+			{
+				$declarations[] = $node; unset( $nodes[$key] );
+			}
+		}
+		
+		$result .= $this->compileVarDeclarations( $declarations );
+		
+		foreach( $nodes as $node )
 		{
 			$compilerFnc;
 			
@@ -47,7 +65,8 @@ class Compiler
 			}
 			else
 			{
-				$compilerFnc = array_pop( explode( "\\", get_class( $node ) ) );
+				$compilerFnc = explode( "\\", get_class( $node ) );
+				$compilerFnc = array_pop( $compilerFnc );
 			}
 			
 			$result .= call_user_func( array( $this, 'compile'.ucfirst( $compilerFnc ) ), $node );
@@ -57,14 +76,52 @@ class Compiler
 	}
 	
 	/**
-	 * Converts an identifier to an var
+	 * Converts an var object to string
 	 *
 	 * @param string 			$identifier
 	 * @return string
 	 */
-	protected function identifierToVar( $identifier )
+	protected function varToString( Variable $var )
 	{
-		return '$'.$identifier;
+		return '$'.$var->identifier();
+	}
+	
+	/**
+	 * Convert the jane assigner to a string
+	 *
+	 * @param string 			$assigner
+	 * @return string
+	 */
+	protected function assignerToString( $assigner )
+	{
+		switch ( $assigner ) 
+		{
+			case 'equal':
+				return '=';
+			break;
+			
+			default:
+				throw new Exception( "Uknown value assigner ".$assigner );
+			break;
+		}
+	}
+	
+	/**
+	 * Compiles the var declarations
+	 *
+	 * @param array[Jane\Node] 			$nodes
+	 * @return string
+	 */
+	protected function compileVarDeclarations( array $nodes )
+	{
+		$buffer = "";
+		
+		foreach( $nodes as $node )
+		{
+			$buffer .= $this->varToString( $node->var ).', ';
+		}
+		
+		return substr( $buffer, 0, -2 ).";\n\n";
 	}
 	
 	/**
@@ -75,6 +132,17 @@ class Compiler
 	 */
 	protected function compileVarAssignment( $node )
 	{
-		return $this->identifierToVar( $node->identifier ).' '.$node->assigner.' '.$node->value.";\n";
+		return $this->varToString( $node->var ).' '.$this->assignerToString( $node->assigner ).' '.reset( $node->value )->value.";\n";
+	}
+	
+	/**
+	 * Compiles the var assignment
+	 *
+	 * @param Jane\Node 			$node
+	 * @return string
+	 */
+	protected function compileLinebreak( $node )
+	{
+		return "\n";
 	}
 }

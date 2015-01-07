@@ -96,13 +96,14 @@ class Jane
 	}
 	
 	/**
-	 * Run the jane transormer over a piece of code
+	 * Transform jane code to the target language
 	 *
-	 * @param string			$code
+	 * @param string 			$code
 	 * @return string
 	 */
 	public static function transform( $code )
 	{
-		return static::create( $code )->transform(); 
+		$compiler = new Compiler( static::parse( $code ) );
+		return $compiler->transform();
 	}
 }

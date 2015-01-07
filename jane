@@ -7,13 +7,36 @@
  *
  * This is the jane command line interface
  */
-if ( isset( $argv ) ) 
+
+use Jane\Jane; 
+
+// we dont need the first argument
+array_shift( $argv );
+
+// if no more arguments are left print out the help
+if ( empty( $argv ) ) 
 {
-    array_shift( $argv ); $argv = implode( ' ', $argv );
+    echo 
+"
++--------------------------------+
+| Jane, the programming language |
++--------------------------------+
+
+ - transform jane code to the target language
+   php jane transform <file> <language:php>
+
+"; die;
 }
 
 require 'vendor/autoload.php';
 
-echo Jane::transform( file_get_contents( $argv ) ); die;
+$command = array_shift( $argv );
 
-echo "\n".eval( Jane::transform( file_get_contents( $argv ) ) );
+if ( $command == 'transform' ) 
+{
+    echo Jane::transform( file_get_contents( array_shift( $argv ) ) ); 
+}
+else
+{
+    echo "Unknown command '".$command."'\n";
+}
