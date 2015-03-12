@@ -17,39 +17,42 @@ _Again: "early stage" a lot of stuff is not coded pretty well or even finished._
 
 ```
 // simple variable
-myVar = "Hello World"
+myVar = "Hello World";
 
 // or an array
-myArray = @[ 1, 2, 3 ]
+myArray = @[ 1, 2, 3 ];
 
 // fixed types
-int myNumber = 42
-float myFloat = 12.3
-string myString = "Foo"
-array myArray = @[ 'apple', 'kiwi' ]
-bool myBool = yes
+int myNumber = 42;
+float myFloat = 12.3;
+string myString = "Foo";
+array myArray = @[ 'apple', 'kiwi' ];
+bool myBool = yes;
 ```
 
 ### Arrays
 
 ```
 // creating an array
-myArray = @[ name: 'jane', type: 'language' ]
+myArray = @[ name: 'jane', type: 'language' ];
 
 // accessing the array
-myArray.name
+myArray.name;
 ```
 
 ### Executing functions
 ```
-int timestamp = [time]
+int timestamp = [time];
 
 // static method
-keyword = [String random]
+keyword = [String random];
 
 // arguments
-numbers = [explode: ':', '5:6:0:1' ]
-password = [String random: 8, 'pass']
+numbers = [explode: ':', '5:6:0:1' ];
+password = [String random: 8, 'pass'];
+
+// named arguments
+User user = [User search: @name: 'Mario', @age: 21];
 
 ```
 
@@ -70,7 +73,7 @@ fnc myfunction:a,b
 
 int fnc someFunctionThatReturnsInt
 {
-	return 12
+	return 12;
 }
 
 if value is 5

@@ -593,7 +593,7 @@ class Parser
 		}
 		
 		// create assignment node
-		return array( new VarAssignment( $var, $assigner, $values ) );
+		return array( new VarAssignment( $var, $assigner, $this->parseExpression( $values ) ) );
 	}
 
 	/**

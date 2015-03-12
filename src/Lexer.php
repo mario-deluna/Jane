@@ -95,11 +95,11 @@ class Lexer
 		"/^(->)/" 						=> "blockstart",
 		"/^(::)/" 						=> "doubleseperator",
 		"/^(:)/" 						=> "seperator",
+		"/^(;)/" 						=> "semicolon",
 		"/^(\|)/" 						=> "concat",
 		"/^(,)/" 						=> "comma",
-		"/^(@)/" 						=> "arrayIndicator",
+		"/^(@)/" 						=> "indicator",
 		"/^(\w+)/" 						=> "identifier",
-		
 	);
 
 	/**
