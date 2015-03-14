@@ -36,6 +36,10 @@ if ( $command == 'transform' )
 {
     echo Jane::transform( file_get_contents( array_shift( $argv ) ) ); 
 }
+elseif ( $command == 'parse' ) 
+{
+    print_r( Jane::parse( file_get_contents( array_shift( $argv ) ) ) ); 
+}
 else
 {
     echo "Unknown command '".$command."'\n";

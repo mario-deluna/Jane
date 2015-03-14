@@ -6,9 +6,9 @@
 
 use Jane/Utils/Input
 
-string name = [Input get:name] ? "World"
+string name = [Input get:name] ? "World";
 
-[print: 'Hello '|name]
+[print: 'Hello ' - name];
 
 ## PHP equivalent
 

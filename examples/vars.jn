@@ -1,1 +1,2 @@
-string name = "jane", age = 18
+string firstname, lastname
+int age = 1
